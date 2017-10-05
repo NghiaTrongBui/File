@@ -29,6 +29,9 @@ void WriteFile(const char*, const char*);
 void WriteMethod(const char*);
 int WriteContent(char*);
 
+// Copy file
+int CopyFile(const char*, const char*);
+
 // File handle
 int DeleteFile(const char*);
 

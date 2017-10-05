@@ -179,17 +179,41 @@ int DeleteFile(const char* link){
 int CopyFile(const char* destination, const char* source){
   FILE* src, *dst;
 
-  src = OpenFile(source, "r");
-  if(src != NULL){
-    dst = OpenFile(destination, "w+");
+  if(strcmp(destination, source) == 0){
+    return FALSE;
   }
-  else{
+  //continue, create new file(destination) = source + copy
+
+  src = OpenFile(source, "r+");
+  dst = OpenFile(destination, "w+");
+  if(src == NULL){
     fprintf(stderr, "%s don't exist", source);
     return FALSE;
   }
 
-  if(GetSizeFile(source) >= 4096){
-    return TRUE;
+  if(dst == NULL){
+    fprintf(stdout, "%s cann't open file!", destination);
+    return FALSE;
+  }
+
+  if(GetSizeFile(source) >= BUFFER){
+    char* cnt = (char*)malloc(BUFFER);
+
+    if(cnt == NULL){
+      return FALSE;
+    }
+
+    while((cnt = fgets(cnt, BUFFER, src)) != NULL){
+      fputs(cnt, dst);
+    }
+
+    free(cnt);
+  }
+  else{
+    int c;
+    while((c = fgetc(src)) != EOF){
+      fputc(c, dst);
+    }
   }
 
   return TRUE;
